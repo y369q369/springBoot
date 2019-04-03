@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+	<head>
+		<title>测试Model</title>
+		<meta name="keywords" content="keyword1,keyword2,keyword3"/>
+	    <meta name="description" content="this is my page"/>
+	    <meta name="content-type" content="text/html; charset=UTF-8"/>
+	</head>
+	<body>
+		<div style="padding-top : 100px; text-align: center;">
+			<p>Hello Model</p>
+			
+			<!-- 测试model的addAttribute(Object attributeValue)方法 -->
+			<p th:text="${string}"></p>
+			
+			<!-- 测试model的addAttribute(String attributeName, @Nullable Object attributeValue)方法 -->
+			<p th:text="${content}"></p>
+			
+			<!-- 测试model的addAllAttributes(Map<String, ?> attributes)方法 -->
+			<p th:text="${map}"></p>
+		</div>
+		
+		
+	</body>
+</html>

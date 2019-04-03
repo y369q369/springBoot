@@ -1,0 +1,15 @@
+server:
+  #springBoot内置tomact的端口号
+  port: 8086
+  servlet:
+    #springBoot项目的前缀名
+    context-path: /thymeleaf
+ 
+spring:
+  # thymeleaf 模板引擎配置
+  thymeleaf:
+    cache: false  
+    # thymeleaf模板对html5没有结束符的标签解决
+    mode: LEGACYHTML5
+    # thymeleaf修饰的动态页面 自定义根目录
+    prefix: classpath:/templates/

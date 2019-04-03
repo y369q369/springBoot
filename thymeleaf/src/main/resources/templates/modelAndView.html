@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+	<head>
+		<title>测试ModelAndView</title>
+		<meta name="keywords" content="keyword1,keyword2,keyword3"/>
+	    <meta name="description" content="this is my page"/>
+	    <meta name="content-type" content="text/html; charset=UTF-8"/>
+	</head>
+	<body>
+		<div style="padding-top : 100px; text-align: center;">
+			<p>Hello ModelAndView</p>
+			
+			<!-- 接收model2 -->
+			<p th:text="${model2}"></p>
+			
+			<!-- 接收map,拼接的字符串用' -->
+			<p th:text="${map1 +', '+ map2}"></p>
+			
+			<!-- 接收obj,拼接的字符串用' -->
+			<p th:text="${obj1 +', '+ string}"></p>
+		</div>
+		
+	</body>
+</html>
