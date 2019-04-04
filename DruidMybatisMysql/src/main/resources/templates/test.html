@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>查询</title>
+	
+    <meta name="keywords" content="keyword1,keyword2,keyword3">
+    <meta name="description" content="this is my page">
+    <meta name="content-type" content="text/html; charset=UTF-8">
+	
+	<!-- springEL的引入 样式格式 -->
+	<!-- bootstrap的样式 -->    
+  	<link rel="stylesheet" th:href="@{/bootstrap-4.3.1-dist/css/bootstrap.css}"/>
+  	<!-- bootstrap-table的样式 -->
+	<link rel="stylesheet" th:href="@{/bootstrap-table-dist/bootstrap-table.css}"/>
+
+  </head>
+  
+  <body>
+  		<div style="text-align: center; padding-top: 80px">
+			<h1>测试查询</h1>
+			  		
+	  		<div class="row" style="margin-top: 50px">
+	  			<div class="col-md-4 text-right">
+	  				<label for="testId">id：</label>
+	  			</div>
+	  			<div class="col-md-2">
+	  				<input type="text" id="testId" class="form-control">
+	  			</div>
+	  			
+	  			<div class="col-md-3">
+		  			<button class="btn btn-primary" onclick="init()">查询</button> &nbsp;  &nbsp;
+		  			<button class="btn btn-success" onClick="AddModel()">新增</button> &nbsp;  &nbsp;
+		  			<button class="btn btn-warning" onClick="deleteIds()">批量删除</button>
+	  			</div>
+	  			
+	  		</div>
+	  		
+	  		<div style="margin-top: 20px; padding: 0 10%;">
+	  			<table id="testTable" class="table table-bordered table-striped table-hover"></table>
+	  		</div>
+  		</div>
+  		
+  		<!-- 新增/修改test的公用模态框 -->
+  		<div id="addTestModel" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+		  	<div class="modal-dialog" role="document">
+		    	<div class="modal-content">
+		      		<div class="modal-header">
+		        		<h5 class="modal-title" id="title"></h5>
+				        <button type="button" class="close" data-dismiss="modal" aria-label="true">
+				          <span aria-hidden="true">&times;</span>
+				        </button>
+				    </div>
+				    <div class="modal-body">
+				    	<div id="operateId" class="input-group input-group-lg" style="margin:10px 0">
+						  	<div class="input-group-prepend" >
+						    	<label class="input-group-text" for="id">testId</label>
+						  	</div>
+						  	<input type="text" id="id" readonly class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm" >
+						</div>
+						
+				    	<div class="input-group input-group-lg" style="margin:10px 0">
+						  	<div class="input-group-prepend">
+						    	<label class="input-group-text" for="name">testName</label>
+						  	</div>
+						  	<input type="text" id="name" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+						</div>
+						
+				    	<div class="input-group input-group-lg" style="margin:10px 0">
+						  	<div class="input-group-prepend">
+						    	<label class="input-group-text" for="password">testPassword</label>
+						  	</div>
+						  	<input type="text" id="password" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+						</div>
+				    </div>
+			      	<div class="modal-footer">
+			      		<button type="button" class="btn btn-info" id="updateButton" onClick="operateTest('updateTest', 'put')">修改</button>
+			        	<button type="button" class="btn btn-success" id="addButton" onClick="operateTest('add', 'post')">新增</button>
+			        	<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+			      	</div>
+		    	</div>
+		  	</div>
+		</div>
+  		
+  		
+  		<!--   ===============================================================   -->
+		  		
+  		<!-- jquery的js脚本 -->    
+  		<script type="text/javascript" th:src="@{/jquery-3.3.1.js}"></script>
+  		<!-- bootstrap的js脚本 -->    
+  		<script type="text/javascript" th:src="@{/bootstrap-4.3.1-dist/js/bootstrap.js}"></script>
+  		<!-- bootstrap-table的js脚本 -->    
+  		<script type="text/javascript" th:src="@{/bootstrap-table-dist/bootstrap-table.js}"></script>
+  		<!-- bootstrap-table的中文js脚本  -->    
+		<script type="text/javascript" th:src="@{/bootstrap-table-dist/locale/bootstrap-table-zh-CN.js}"></script>
+		<!-- js通过内联方式获取后台的request数据 -->
+		<script type="text/javascript">
+			$(function(){
+				init();
+			})
+		
+			function init() {
+				$("#testTable").bootstrapTable('destroy');
+				$("#testTable").bootstrapTable({
+					method:"post",
+		    		contentType : "application/x-www-form-urlencoded",		//springmvc 请求类型为post, 加上
+		    		url:"queryById",
+		    		dataType:"json",
+		    		cache:false,						//是否启用缓存
+	           	    striped: true,     				    //是否显示行间隔色
+	           	    clickToSelect: true,              	//是否启用点击选中行
+	           	    uniqueId: "testId", 				//每一行的唯一标识，一般为主键列
+		    		queryParams: {						//传递的参数
+		    			"testId" : $("#testId").val()
+		    		},
+		    		columns:[							//返回的参数
+		    			{
+		    				checkbox: true
+		    		    },{
+			    			field:"",				
+			    			title:"序号",					
+			    			formatter: function(value, row, index) {
+			    				return index + 1;
+			    			}
+		    		    },{
+			    			field:"testId",					//后台返回的参数名，变量名要保持一致
+			    			title:"唯一id"					//页面表格中显示的字段
+		    			},{
+		    				field:"testName",
+		    				title:"名称"
+		    			},{
+		    				title:"操作",
+		    				formatter:function(value,row,index){
+		    					return "<button class='btn btn-info' onclick='updateModel(\"" + row.testId +"\")'>修改</button>  &nbsp;  &nbsp;"
+		    						+ "  <button class='btn btn-warning' onclick='deleteById(\"" + row.testId +"\")'>删除</button>";
+		    				}
+		    			}
+		    		],onLoadSuccess : function(data){
+						console.log(data);
+					}
+		    	});
+			}
+	    	
+	    	//打开新增模态框
+	    	function AddModel() {
+	    		clearData();
+	    		$("#title").text("新增test");
+	    		$("#operateId").hide();
+	    		$("#updateButton").hide();
+	    		$("#addButton").show();
+	    		$("#addTestModel").modal('show');
+	    	}
+	    	
+	    	//打开修改模态框
+	    	function updateModel(testId) {
+	    		$("#title").text("修改test");
+	    		$("#operateId").show();
+	    		$("#addButton").hide();
+	    		$("#updateButton").show();
+	    		var row = $("#testTable").bootstrapTable('getRowByUniqueId', testId)
+	    		$("#id").val(row.testId);
+	    		$("#name").val(row.testName);
+	    		$("#password").val(row.testPassword);
+	    		$("#addTestModel").modal('show');
+	    	}
+	    	
+	    	//新增/修改test公共方法
+	    	function operateTest(url, type) {
+	    		$.ajax({
+					url: url,
+					type: type,
+					data: {
+						"testId" : $("#id").val(),
+						"testName" : $("#name").val(),
+						"testPassword" : $("#password").val(),
+					},
+					success:function(data){
+						$("#addTestModel").modal('hide');
+						init();
+						alert(data);
+					},
+					error:function(res){
+						console.log(res);
+						alert("操作失败");
+					}
+				})
+	    	}
+	    	
+	    	// 清除模态框数据
+	    	function clearData() {
+	    		$("#id").val("");
+	    		$("#name").val("");
+	    		$("#password").val("");
+	    	}
+	    	
+	    	// 删除test
+	    	function deleteById(testId) {
+	    		$.ajax({
+	    			url: "deleteById",
+					type: "delete",
+					data: {
+						"testId" : testId,
+					},
+					success:function(data){
+						init();
+						alert(data);
+					},
+					error:function(res){
+						console.log(res);
+						alert("操作失败");
+					}
+	    		})
+	    	}
+	    	
+	    	// 批量删除
+	    	function deleteIds() {
+	    		var rows = $("#testTable").bootstrapTable('getSelections');
+	    		console.log(rows);
+	    		if(rows == null || rows.length == 0) {
+	    			alert("请选择要删除的test!");
+	    		}else {
+	    			if(confirm("确定要清空数据吗？")) {
+						var testIds = "";
+		    			for(var i = 0; i < rows.length; i++) {
+		    				if(i = 0) {
+			    				testIds += rows[i].testId;
+		    				}else {
+			    				testIds += "," + rows[i].testId;
+		    				}
+		    			}
+		    			$.ajax({
+			    			url: "deleteIds",
+							type: "delete",
+							data: {
+								"testIds" : testIds,
+							},
+							success:function(data){
+								init();
+								alert(data);
+							},
+							error:function(res){
+								console.log(res);
+								alert("操作失败");
+							}
+			    		})
+			    	}
+	    		}
+	    	}
+		</script>
+  </body>
+</html>

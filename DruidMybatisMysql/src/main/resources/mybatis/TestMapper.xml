@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 对应mapper接口的全类名 -->
+<mapper namespace="demo.mapper.TestMapper">
+
+	<!-- domain实体类 与 数据库表 做映射，   type -> 实体类全类名，由于配置过type-aliases-package故只需配置类名  ，  id -> 这个resultMap 的唯一引用id -->
+	<resultMap type="Test" id="testMap">
+		<id property="testId" column="test_id"/>
+		<result property="testPassword" column="test_password"/>
+		<result property="testName" column="test_name"/>
+	</resultMap>
+	
+	<!-- id:对应mapper接口的方法名,  resultMap: 对应定义的上方的resultMap，返回对应的实体类 -->
+	<!-- 返回值会自动根据对象数量映射成单个对象或对象集合 -->
+	<!-- mapper接口中有参数的方法：已经在接口中通过注解的方式传入，此处不需再次接收 -->
+	<select id="queryById"  resultMap="testMap">
+		select * from test 
+		<where>
+			<if test="testId != null and testId != ''">
+				test_id = #{testId}
+			</if>
+		</where>
+	</select>
+	
+	<delete id="deleteById">
+		delete from test where test_id = #{testId}
+	</delete>
+	
+	<delete id="deleteIds">
+		delete from test 
+		<where>
+			<if test="testIds != null and testIds.length > 0">
+				test_id in 
+				<foreach collection="testIds" item="testId" open="(" close=")" separator=",">
+			 		#{testId}
+			 	</foreach>
+			</if>
+		</where>
+	</delete>
+	
+	<update id="updateTest">
+		update test set test_password = #{testPassword}, test_name = #{testName} where test_id = #{testId}
+	</update>
+	
+	<insert id="add">
+		insert into test values(#{testId}, #{testPassword}, #{testName})
+	</insert>
+</mapper>
