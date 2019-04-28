@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Built-By: GrassPrince
+Build-Jdk: 10.0.1
+Implementation-Title: springboot_validation
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: springboot_validation
+Implementation-URL: http://maven.apache.org
+Created-By: Maven Integration for Eclipse
+
